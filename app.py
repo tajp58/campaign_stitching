@@ -5,7 +5,7 @@ from dash import html, dcc, dash_table, Input, Output, State
 from dash.exceptions import PreventUpdate
 
 # Define your dataframe or import it as you did before
-losers = pd.read_csv('./src/dash/data/campaignstitch.csv')
+losers = pd.read_csv('src/dash/data/campaignstitch.csv')
 # Drop the columns that do not matter
 losers.drop(['Volume', 'Avg Vol (3 month)', 'PE Ratio (TTM)', '52 Week Range'], axis='columns', inplace=True)
 losers.columns = ['Symbol', 'Company Name', 'Price', 'Change', '% Change', 'Mkt Cap']
@@ -46,10 +46,10 @@ table = html.Div([
 # Create dropdown menu options
 dropdown_options = [{'label': symbol_ref, 'value': symbol_ref} for symbol_ref in losers['Reference'].unique()]
 
-app = dash.Dash(__name__)
+dash_app = dash.Dash(__name__)
 
 # Layout of the page:
-app.layout = html.Div([
+dash_app.layout = html.Div([
     html.H2("Today's Company Losers"),
     html.H4("Select a Reference", id="Message1"),
     html.Button("Toggle Uncategorized", id="toggle_button", n_clicks=0),
@@ -61,7 +61,7 @@ app.layout = html.Div([
 ])
 
 # Callback to update selected campaigns when button is clicked
-@app.callback(Output("Message1", "children"),
+@dash_app.callback(Output("Message1", "children"),
               Output('table', 'selected_rows'),
               [Input('store_button', 'n_clicks')],
               [State('table', 'selected_rows'),
@@ -75,7 +75,7 @@ def store_selections(n_clicks, selected_rows, data):
         raise PreventUpdate
 
 # Callback to export dataframe to CSV when button is clicked
-@app.callback(Output('export_button', 'n_clicks'),
+@dash_app.callback(Output('export_button', 'n_clicks'),
               [Input('export_button', 'n_clicks')])
 def export_to_csv_callback(n_clicks):
     if n_clicks > 0:
@@ -85,7 +85,7 @@ def export_to_csv_callback(n_clicks):
         raise PreventUpdate
 
 # Callback to filter the table based on the selected symbol reference
-@app.callback(Output('table', 'data'),
+@dash_app.callback(Output('table', 'data'),
               [Input('symbol_dropdown', 'value')])
 def filter_table(symbol_reference):
     if symbol_reference:
@@ -95,7 +95,7 @@ def filter_table(symbol_reference):
     return filtered_data
 
 # Callback to toggle visibility of uncategorized campaigns
-@app.callback(Output('table', 'style_data_conditional'),
+@dash_app.callback(Output('table', 'style_data_conditional'),
               [Input('toggle_button', 'n_clicks')],
               [State('table', 'style_data_conditional')])
 def toggle_uncategorized(n_clicks, current_style):
@@ -108,4 +108,4 @@ def toggle_uncategorized(n_clicks, current_style):
     return current_style
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    dash_app.run_server(debug=True)
