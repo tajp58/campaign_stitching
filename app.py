@@ -47,6 +47,7 @@ table = html.Div([
 dropdown_options = [{'label': symbol_ref, 'value': symbol_ref} for symbol_ref in losers['Reference'].unique()]
 
 dash_app = dash.Dash(__name__)
+app = dash_app.server
 
 # Layout of the page:
 dash_app.layout = html.Div([
