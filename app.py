@@ -5,7 +5,7 @@ from dash import html, dcc, dash_table, Input, Output, State
 from dash.exceptions import PreventUpdate
 
 # Define your dataframe or import it as you did before
-losers = pd.read_csv('src/dash/data/campaignstitch.csv')
+losers = pd.read_csv('/mnt/campaign_stitching/data/campaignstitch.csv')
 # Drop the columns that do not matter
 losers.drop(['Volume', 'Avg Vol (3 month)', 'PE Ratio (TTM)', '52 Week Range'], axis='columns', inplace=True)
 losers.columns = ['Symbol', 'Company Name', 'Price', 'Change', '% Change', 'Mkt Cap']
@@ -80,7 +80,7 @@ def store_selections(n_clicks, selected_rows, data):
               [Input('export_button', 'n_clicks')])
 def export_to_csv_callback(n_clicks):
     if n_clicks > 0:
-        losers.to_csv('campaignstitch_selected.csv', index=False)
+        losers.to_csv('/mnt/campaign_stitching/data/campaignstitch_selected.csv', index=False)
         return 0
     else:
         raise PreventUpdate
